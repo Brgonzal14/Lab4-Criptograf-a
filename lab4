@@ -2,7 +2,7 @@ from Crypto.Cipher import DES, DES3, AES
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Random import get_random_bytes
 
-# Ajusta la clave o el IV a la longitud exacta requerida
+# Ajusta la clave o el IV a la longitud requerida
 def ajustar_clave(clave, tamanio_requerido):
     clave = clave.encode()  # convertir a bytes
     if len(clave) < tamanio_requerido:
@@ -12,7 +12,7 @@ def ajustar_clave(clave, tamanio_requerido):
     print(f"Clave/IV ajustado ({tamanio_requerido} bytes): {clave}")
     return clave
 
-# Cifra y descifra el texto usando el algoritmo indicado
+# Cifra y descifra el texto usando un algoritmo
 def cifrar_descifrar(mensaje, clave, iv, algoritmo):
     # Selección del cifrador
     if algoritmo == "DES":
