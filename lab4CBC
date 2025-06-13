@@ -1,0 +1,58 @@
+from Crypto.Cipher import DES, DES3, AES
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
+
+def ajustar_clave(clave, tamanio_requerido):
+    clave = clave.encode()
+    if len(clave) < tamanio_requerido:
+        clave += get_random_bytes(tamanio_requerido - len(clave))
+    elif len(clave) > tamanio_requerido:
+        clave = clave[:tamanio_requerido]
+    print(f"Clave/IV ajustado ({tamanio_requerido} bytes): {clave}")
+    return clave
+
+#  --- Funciones específicas para cada algoritmo ---
+def cifrar_descifrar_DES(mensaje, clave, iv):
+    cipher = DES.new(clave, DES.MODE_CBC, iv)
+    bloque = cipher.encrypt(pad(mensaje.encode(), cipher.block_size))
+    print(f"DES  - Texto cifrado: {bloque}")
+    decipher = DES.new(clave, DES.MODE_CBC, iv)
+    texto = unpad(decipher.decrypt(bloque), cipher.block_size).decode()
+    print(f"DES  - Texto descifrado: {texto}\n")
+
+def cifrar_descifrar_3DES(mensaje, clave, iv):
+    cipher = DES3.new(clave, DES3.MODE_CBC, iv)
+    bloque = cipher.encrypt(pad(mensaje.encode(), cipher.block_size))
+    print(f"3DES - Texto cifrado: {bloque}")
+    decipher = DES3.new(clave, DES3.MODE_CBC, iv)
+    texto = unpad(decipher.decrypt(bloque), cipher.block_size).decode()
+    print(f"3DES - Texto descifrado: {texto}\n")
+
+def cifrar_descifrar_AES(mensaje, clave, iv):
+    cipher = AES.new(clave, AES.MODE_CBC, iv)
+    bloque = cipher.encrypt(pad(mensaje.encode(), cipher.block_size))
+    print(f"AES  - Texto cifrado: {bloque}")
+    decipher = AES.new(clave, AES.MODE_CBC, iv)
+    texto = unpad(decipher.decrypt(bloque), cipher.block_size).decode()
+    print(f"AES  - Texto descifrado: {texto}\n")
+
+def main():
+    texto = input("Texto a cifrar: ")
+
+    # Lectura de claves e IVs
+    cd, ides = input("Clave DES: "), input("IV DES: ")
+    c3, i3  = input("Clave 3DES: "), input("IV 3DES: ")
+    ca, ia  = input("Clave AES: "), input("IV AES: ")
+
+    # Ajuste de longitudes
+    cd, ides = ajustar_clave(cd, 8), ajustar_clave(ides, 8)
+    c3, i3   = ajustar_clave(c3, 24), ajustar_clave(i3, 8)
+    ca, ia   = ajustar_clave(ca, 32), ajustar_clave(ia, 16)
+
+    # Cifrado y descifrado
+    cifrar_descifrar_DES(texto, cd, ides)
+    cifrar_descifrar_3DES(texto, c3, i3)
+    cifrar_descifrar_AES(texto, ca, ia)
+
+if __name__ == "__main__":
+    main()
