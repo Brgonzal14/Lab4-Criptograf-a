@@ -15,7 +15,7 @@ def ajustar_clave(clave, tamanio_requerido):
 def cifrar_descifrar_DES(mensaje, clave, iv):
     cipher = DES.new(clave, DES.MODE_CBC, iv)
     bloque = cipher.encrypt(pad(mensaje.encode(), cipher.block_size))
-    print(f"DES  - Texto cifrado: {bloque}")
+    print(f"DES  - Texto cifrado (hex): {bloque.hex()}")
     decipher = DES.new(clave, DES.MODE_CBC, iv)
     texto = unpad(decipher.decrypt(bloque), cipher.block_size).decode()
     print(f"DES  - Texto descifrado: {texto}\n")
@@ -23,7 +23,7 @@ def cifrar_descifrar_DES(mensaje, clave, iv):
 def cifrar_descifrar_3DES(mensaje, clave, iv):
     cipher = DES3.new(clave, DES3.MODE_CBC, iv)
     bloque = cipher.encrypt(pad(mensaje.encode(), cipher.block_size))
-    print(f"3DES - Texto cifrado: {bloque}")
+    print(f"3DES - Texto cifrado (hex): {bloque.hex()}")
     decipher = DES3.new(clave, DES3.MODE_CBC, iv)
     texto = unpad(decipher.decrypt(bloque), cipher.block_size).decode()
     print(f"3DES - Texto descifrado: {texto}\n")
@@ -31,7 +31,7 @@ def cifrar_descifrar_3DES(mensaje, clave, iv):
 def cifrar_descifrar_AES(mensaje, clave, iv):
     cipher = AES.new(clave, AES.MODE_CBC, iv)
     bloque = cipher.encrypt(pad(mensaje.encode(), cipher.block_size))
-    print(f"AES  - Texto cifrado: {bloque}")
+    print(f"AES  - Texto cifrado (hex): {bloque.hex()}")
     decipher = AES.new(clave, AES.MODE_CBC, iv)
     texto = unpad(decipher.decrypt(bloque), cipher.block_size).decode()
     print(f"AES  - Texto descifrado: {texto}\n")
@@ -41,8 +41,8 @@ def main():
 
     # Lectura de claves e IVs
     cd, ides = input("Clave DES: "), input("IV DES: ")
-    c3, i3  = input("Clave 3DES: "), input("IV 3DES: ")
-    ca, ia  = input("Clave AES: "), input("IV AES: ")
+    c3, i3   = input("Clave 3DES: "), input("IV 3DES: ")
+    ca, ia   = input("Clave AES: "), input("IV AES: ")
 
     # Ajuste de longitudes
     cd, ides = ajustar_clave(cd, 8), ajustar_clave(ides, 8)
