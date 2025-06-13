@@ -1,0 +1,74 @@
+from Crypto.Cipher import DES, DES3, AES
+from Crypto.Util.Padding import pad, unpad
+from Crypto.Random import get_random_bytes
+
+# Ajusta la clave o el IV a la longitud exacta requerida
+def ajustar_clave(clave, tamanio_requerido):
+    clave = clave.encode()  # convertir a bytes
+    if len(clave) < tamanio_requerido:
+        clave += get_random_bytes(tamanio_requerido - len(clave))
+    elif len(clave) > tamanio_requerido:
+        clave = clave[:tamanio_requerido]
+    print(f"Clave/IV ajustado ({tamanio_requerido} bytes): {clave}")
+    return clave
+
+# Cifra y descifra el texto usando el algoritmo indicado
+def cifrar_descifrar(mensaje, clave, iv, algoritmo):
+    if algoritmo == "DES":
+        cipher = DES.new(clave, DES.MODE_CBC, iv)
+    elif algoritmo == "3DES":
+        cipher = DES3.new(clave, DES3.MODE_CBC, iv)
+    elif algoritmo == "AES":
+        cipher = AES.new(clave, AES.MODE_CBC, iv)
+    else:
+        raise ValueError("Algoritmo no válido.")
+
+    # Cifrado
+    mensaje_cifrado = cipher.encrypt(pad(mensaje.encode(), cipher.block_size))
+    print(f"{algoritmo} - Texto cifrado: {mensaje_cifrado}")
+
+    # Descifrado
+    if algoritmo == "DES":
+        decipher = DES.new(clave, DES.MODE_CBC, iv)
+    elif algoritmo == "3DES":
+        decipher = DES3.new(clave, DES3.MODE_CBC, iv)
+    elif algoritmo == "AES":
+        decipher = AES.new(clave, AES.MODE_CBC, iv)
+
+    mensaje_descifrado = unpad(decipher.decrypt(mensaje_cifrado), cipher.block_size)
+    print(f"{algoritmo} - Texto descifrado: {mensaje_descifrado.decode()}\n")
+
+# Función principal
+def main():
+    # 1) Texto a cifrar
+    texto = input("Texto a cifrar: ")
+
+    # 2) Datos para DES
+    clave_des_input = input("Ingrese la clave para DES: ")
+    iv_des_input = input("Ingrese el IV para DES: ")
+
+    # 3) Datos para 3DES
+    clave_3des_input = input("Ingrese la clave para 3DES: ")
+    iv_3des_input = input("Ingrese el IV para 3DES: ")
+
+    # 4) Datos para AES-256
+    clave_aes_input = input("Ingrese la clave para AES-256: ")
+    iv_aes_input = input("Ingrese el IV para AES-256: ")
+
+    # 5) Ajustar claves e IVs
+    clave_des = ajustar_clave(clave_des_input, 8)
+    iv_des = ajustar_clave(iv_des_input, 8)
+
+    clave_3des = ajustar_clave(clave_3des_input, 24)
+    iv_3des = ajustar_clave(iv_3des_input, 8)
+
+    clave_aes = ajustar_clave(clave_aes_input, 32)
+    iv_aes = ajustar_clave(iv_aes_input, 16)
+
+    # 6) Cifrado y descifrado para cada algoritmo
+    cifrar_descifrar(texto, clave_des, iv_des, "DES")
+    cifrar_descifrar(texto, clave_3des, iv_3des, "3DES")
+    cifrar_descifrar(texto, clave_aes, iv_aes, "AES")
+
+if __name__ == "__main__":
+    main()
